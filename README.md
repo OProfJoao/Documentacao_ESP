@@ -4,13 +4,13 @@ Esta documentação tem como objetivo apresentar os passos iniciais para quem de
 
 ---
 
-## 1. Introdução
+## 🚀 Introdução
 
 O ESP32 é um microcontrolador de baixo custo e alta performance, amplamente utilizado em projetos de IoT (Internet das Coisas) e automação. Ele possui Wi-Fi e Bluetooth integrados, o que o torna ideal para aplicações conectadas.
 
 ---
 
-## 2. Pré-requisitos
+## 📋 Pré-requisitos
 
 Antes de iniciar, certifique-se de ter os seguintes itens:
 
@@ -21,14 +21,14 @@ Antes de iniciar, certifique-se de ter os seguintes itens:
 
 ---
 
-## 3. Instalação do Ambiente de Desenvolvimento
+## 🛠 Instalação do Ambiente de Desenvolvimento
 
-### 3.1. Instalando a IDE Arduino
+### 1. Instalando a IDE Arduino
 
 1. Acesse o [site oficial do Arduino](https://www.arduino.cc/en/software) e baixe a IDE correspondente ao seu sistema operacional.
 2. Siga as instruções de instalação para seu sistema.
 
-### 3.2. Configurando a Placa ESP32 na IDE Arduino
+### 2. Configurando a Placa ESP32 na IDE Arduino
 
 1. Abra a IDE do Arduino.
 2. Vá até **Arquivo > Preferências**.
@@ -40,11 +40,11 @@ Antes de iniciar, certifique-se de ter os seguintes itens:
 
 ---
 
-## 4. Primeiro Projeto: Blink
+## 💡 Primeiro Projeto: Blink
 
 Vamos criar um projeto simples que faz um LED piscar, conhecido como “Blink”.
 
-### 4.1. Código Exemplo
+### 1. Código Exemplo
 
 Crie um novo sketch na IDE Arduino e copie o código abaixo:
 
@@ -66,7 +66,7 @@ digitalWrite(ledPin, LOW);
 delay(1000); // Espera 1 segundo
 }
 ```
-### 4.2. Carregando o Código
+### 2. Carregando o Código
 
 1. Conecte o ESP32 ao computador via cabo USB.
 2. Selecione a porta correta em Ferramentas > Porta.
@@ -75,11 +75,11 @@ delay(1000); // Espera 1 segundo
 
 ---
 
-## 5. Problemas Comuns e Soluções
+## 🛑 Problemas Comuns e Soluções
 
 Durante a configuração do ESP32, pode ser necessário resolver alguns problemas relacionados ao driver do chip conversor serial presente na placa. Muitas vezes, o problema está relacionado ao chip utilizado, que pode ser CH341 ou CP210x.
 
-### 5.1. Identificando o Chip Conversor Serial
+### 1. Identificando o Chip Conversor Serial
 
 - Inspeção Visual: Verifique na placa de desenvolvimento se há alguma indicação ou marcação que identifique o chip. Geralmente, as placas mais comuns utilizam:
 
@@ -89,7 +89,7 @@ Durante a configuração do ESP32, pode ser necessário resolver alguns problema
 
 - Especificações da Placa: Consulte a documentação ou o site do fabricante da sua placa para confirmar qual chip está sendo utilizado.
 
-### 5.2. Instalando os Drivers Recomendados
+### 2. Instalando os Drivers Recomendados
 
 - **Para CH341:**
   - Acesse o [site oficial da WCH](http://www.wch.cn/download/CH341SER_EXE.html) para baixar o driver.
@@ -99,7 +99,7 @@ Durante a configuração do ESP32, pode ser necessário resolver alguns problema
   - Visite o [site da Silicon Labs](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) para baixar o driver CP210x.
   - Instale o driver conforme as orientações do site.
 
-### 5.3. Dicas Adicionais
+### 3. Dicas Adicionais
 
 - Após a instalação do driver, reinicie o computador, se necessário.
 - Verifique se a porta COM (no Windows) ou o dispositivo serial (no macOS/Linux) está sendo reconhecido corretamente.
@@ -107,17 +107,17 @@ Durante a configuração do ESP32, pode ser necessário resolver alguns problema
 
 ---
 
-## 6. Uso para IoT
+## 🌐 Uso para IoT
 
 O ESP32 é amplamente utilizado em aplicações de Internet das Coisas (IoT), permitindo a conexão com serviços de nuvem e brokers MQTT como HiveMQ e Mosquitto. A seguir, um exemplo básico de como utilizar o ESP32 para se conectar a um broker MQTT usando a biblioteca **PubSubClient**.
 
-### 6.1. Pré-requisitos para IoT
+### 1. Pré-requisitos para IoT
 
 - **Wi-Fi:** Configure sua rede Wi-Fi.
 - **Broker MQTT:** Utilize um broker público como HiveMQ ou instale o [Mosquitto](https://mosquitto.org/) localmente.
 - **Biblioteca MQTT:** Instale a biblioteca **PubSubClient** na IDE Arduino (Menu: **Sketch > Incluir Biblioteca > Gerenciar Bibliotecas…** e procure por "PubSubClient").
 
-### 6.2. Código Exemplo para Conexão MQTT
+### 2. Código Exemplo para Conexão MQTT
 
 ```cpp
 #include <WiFi.h>
@@ -182,14 +182,14 @@ void loop() {
   client.loop();
 }
 ```
-### 6.3 Considerações
+### 3 Considerações
 
 - **Segurança:** Para projetos em progução, utilize conexões seguras (TLS/SSL) e autenticação no broker MQTT.
 - **Testes:** Teste sua conexão e ajuste os parâmetros conforme necessário. Utilize ferramentas como MQTT.fx ou MQTT Explorer para monitorar os tópicos.
 
 ---
 
-## 7. Dicas Acidionais para Desenvolvimento
+## 🛠 Dicas Acidionais para Desenvolvimento
 
 - **Bibliotecas:** Explore bibliotecas adicionais que podem facilitar o desenvolvimento, como as para conexão Wi-Fi e MQTT, entre outras.
 - **Documentação:** Consulte a [documentação oficial do ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/) para informações mais detalhadas.
@@ -197,7 +197,7 @@ void loop() {
 
 ---
 
-## 8. Recursos e Referências
+## 📚 Recursos e Referências
 
 - [Site Oficial do ESP32](https://www.espressif.com/en/products/socs/esp32)
 - [Documentação do ESP-IDF (SDK oficial)](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/)
