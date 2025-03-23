@@ -49,21 +49,81 @@ Vamos criar um projeto simples que faz um LED piscar, conhecido como “Blink”
 Crie um novo sketch na IDE Arduino e copie o código abaixo:
 
 ```cpp
-// Define o pino do LED (geralmente o LED embutido está no pino 2)
-const int ledPin = 2;
+#include <WiFi.h>
+#include <PubSubClient.h>
+
+// Configurações da rede Wi-Fi
+const char* ssid = "SUA_SSID";
+const char* password = "SUA_SENHA";
+
+// Configurações do broker MQTT
+const char* mqtt_server = "broker.hivemq.com";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// Função de callback para processar mensagens recebidas
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Mensagem recebida no tópico: ");
+  Serial.println(topic);
+
+  Serial.print("Conteúdo da mensagem: ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
 
 void setup() {
-// Configura o pino do LED como saída
-pinMode(ledPin, OUTPUT);
+  Serial.begin(115200);
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+
+  // Configura a função de callback
+  client.setCallback(callback);
+}
+
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Conectando-se a ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi conectado");
+  Serial.print("Endereço de IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void reconnect() {
+  // Loop até reconectar
+  while (!client.connected()) {
+    Serial.print("Tentando conexão MQTT...");
+    if (client.connect("ESP32Client")) {
+      Serial.println("conectado");
+      // Inscreva-se em um tópico
+      client.subscribe("seu/topico");
+    } else {
+      Serial.print("falha, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5 segundos");
+      delay(5000);
+    }
+  }
 }
 
 void loop() {
-// Liga o LED
-digitalWrite(ledPin, HIGH);
-delay(1000); // Espera 1 segundo
-// Desliga o LED
-digitalWrite(ledPin, LOW);
-delay(1000); // Espera 1 segundo
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
 }
 ```
 ### 2. Carregando o Código
