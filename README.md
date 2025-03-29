@@ -23,20 +23,22 @@ Antes de iniciar, certifique-se de ter os seguintes itens:
 
 ## 🛠 Instalação do Ambiente de Desenvolvimento
 
-### 1. Instalando a IDE Arduino
+### 1. Instalando o VS Code e o PlatformIO
 
-1. Acesse o [site oficial do Arduino](https://www.arduino.cc/en/software) e baixe a IDE correspondente ao seu sistema operacional.
-2. Siga as instruções de instalação para seu sistema.
+1. Baixe e instale o [Visual Studio Code](https://code.visualstudio.com/download).
+2. Abra o VS Code e acesse a aba de Extensões (Ctrl + Shift + X).
+3. Pesquise por PlatformIO IDE e clique em Instalar.
+4. Após a instalação, reinicie o VS Code.
 
-### 2. Configurando a Placa ESP32 na IDE Arduino
+### 2. Criando um Novo Projeto no PlatformIO
 
-1. Abra a IDE do Arduino.
-2. Vá até **Arquivo > Preferências**.
-3. No campo **URLs adicionais para Gerenciadores de Placas**, adicione a seguinte URL: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-4. Clique em **OK** para salvar as preferências.
-5. Vá em **Ferramentas > Placa > Gerenciador de Placas...** e pesquise por "esp32".
-6. Selecione o pacote **esp32 by Espressif Systems** e clique em **Instalar**.
-7. Após a instalação, selecione a placa adequada em **Ferramentas > Placa** (ex.: ESP32 Dev Module).
+1. No VS Code, clique no ícone do PlatformIO (Alienígena 👽) na barra lateral.
+2. Selecione _New Project_.
+3. Defina um nome para o projeto.
+4. Escolha a placa correspondente ao seu ESP32 (ex.: Denky32 (WROOM32)).
+5. Em Framework, selecione Arduino.
+6. Escolha a pasta onde deseja salvar o projeto e clique em _Finish_.
+7. Aguarde a instalação das dependências.
 
 ---
 
@@ -46,92 +48,60 @@ Vamos criar um projeto simples que faz um LED piscar, conhecido como “Blink”
 
 ### 1. Código Exemplo
 
-Crie um novo sketch na IDE Arduino e copie o código abaixo:
+Abra o arquivo `src/main.cpp` e copie o código abaixo:
 
 ```cpp
-#include <WiFi.h>
-#include <PubSubClient.h>
+#include <Arduino.h>
 
-// Configurações da rede Wi-Fi
-const char* ssid = "SUA_SSID";
-const char* password = "SUA_SENHA";
-
-// Configurações do broker MQTT
-const char* mqtt_server = "broker.hivemq.com";
-
-WiFiClient espClient;
-PubSubClient client(espClient);
-
-// Função de callback para processar mensagens recebidas
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Mensagem recebida no tópico: ");
-  Serial.println(topic);
-
-  Serial.print("Conteúdo da mensagem: ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-}
+const byte pinoLED = 2; //Pino do LED pode mudar para cada modelo de placa
 
 void setup() {
   Serial.begin(115200);
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
-
-  // Configura a função de callback
-  client.setCallback(callback);
-}
-
-void setup_wifi() {
-  delay(10);
-  Serial.println();
-  Serial.print("Conectando-se a ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi conectado");
-  Serial.print("Endereço de IP: ");
-  Serial.println(WiFi.localIP());
-}
-
-void reconnect() {
-  // Loop até reconectar
-  while (!client.connected()) {
-    Serial.print("Tentando conexão MQTT...");
-    if (client.connect("ESP32Client")) {
-      Serial.println("conectado");
-      // Inscreva-se em um tópico
-      client.subscribe("seu/topico");
-    } else {
-      Serial.print("falha, rc=");
-      Serial.print(client.state());
-      Serial.println(" tentando novamente em 5 segundos");
-      delay(5000);
-    }
-  }
+  pinMode(pinoLED,OUTPUT);  //Define o pino como saída
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+  digitalWrite(pinoLED,HIGH);
+  delay(1000);
+  digitalWrite(pinoLED,LOW);
+  delay(1000);
 }
 ```
 ### 2. Carregando o Código
 
 1. Conecte o ESP32 ao computador via cabo USB.
-2. Selecione a porta correta em Ferramentas > Porta.
-3. Clique no botão Upload na IDE Arduino para compilar e enviar o código para a placa.
+2. Clique em _Upload_ (seta para direita ➡️) na barra de ferramentas inferior.
+3. Aguarde a compilação e envio do código para a placa.
 4. O LED deve começar a piscar, indicando que o programa foi executado corretamente.
+
+---
+
+### 🖥️ Utilizando o Monitor Serial
+
+O Monitor Serial é uma ferramenta útil para depuração de código e comunicação com o ESP32.
+
+- Como acessar o Monitor Serial:
+  
+  No VSCode, utilizando o framework PlatformIO, o Monitor serial fica na barra de ferramentas inferior, com o símbolo de um plug de tomada🔌 (PlatformIO: Serial Monitor)
+
+
+  Se o ESP32 estiver enviando dados, eles aparecerão no Terminal.
+
+  Exemplo de Código para Teste
+
+  Adicione o seguinte código ao seu programa para testar a comunicação serial:
+``` cpp
+void setup() {
+  Serial.begin(115200);
+  Serial.println("ESP32 pronto!");
+}
+
+void loop() {
+  Serial.println("Rodando...");
+  delay(2000);
+}
+```
+  Se tudo estiver correto, a mensagem "Rodando..." aparecerá no Monitor Serial a cada 2 segundos.
 
 ---
 
@@ -171,85 +141,11 @@ Durante a configuração do ESP32, pode ser necessário resolver alguns problema
 
 O ESP32 é amplamente utilizado em aplicações de Internet das Coisas (IoT), permitindo a conexão com serviços de nuvem e brokers MQTT como HiveMQ e Mosquitto. A seguir, um exemplo básico de como utilizar o ESP32 para se conectar a um broker MQTT usando a biblioteca **PubSubClient**.
 
-### 1. Pré-requisitos para IoT
-
-- **Wi-Fi:** Configure sua rede Wi-Fi.
-- **Broker MQTT:** Utilize um broker público como HiveMQ ou instale o [Mosquitto](https://mosquitto.org/) localmente.
-- **Biblioteca MQTT:** Instale a biblioteca **PubSubClient** na IDE Arduino (Menu: **Sketch > Incluir Biblioteca > Gerenciar Bibliotecas…** e procure por "PubSubClient").
-
-### 2. Código Exemplo para Conexão MQTT
-
-```cpp
-#include <WiFi.h>
-#include <PubSubClient.h>
-
-// Configurações da rede Wi-Fi
-const char* ssid = "SUA_SSID";
-const char* password = "SUA_SENHA";
-
-// Configurações do broker MQTT (exemplo com HiveMQ)
-const char* mqtt_server = "broker.hivemq.com";
-
-WiFiClient espClient;
-PubSubClient client(espClient);
-
-void setup() {
-  Serial.begin(115200);
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
-}
-
-void setup_wifi() {
-  delay(10);
-  Serial.println();
-  Serial.print("Conectando-se a ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi conectado");
-  Serial.print("Endereço de IP: ");
-  Serial.println(WiFi.localIP());
-}
-
-void reconnect() {
-  // Loop até reconectar
-  while (!client.connected()) {
-    Serial.print("Tentando conexão MQTT...");
-    if (client.connect("ESP32Client")) {
-      Serial.println("conectado");
-      // Inscreva-se em um tópico, se necessário
-      client.subscribe("seu/topico");
-    } else {
-      Serial.print("falha, rc=");
-      Serial.print(client.state());
-      Serial.println(" tentando novamente em 5 segundos");
-      delay(5000);
-    }
-  }
-}
-
-void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-}
-```
-### 3 Considerações
-
-- **Segurança:** Para projetos em progução, utilize conexões seguras (TLS/SSL) e autenticação no broker MQTT.
-- **Testes:** Teste sua conexão e ajuste os parâmetros conforme necessário. Utilize ferramentas como MQTT.fx ou MQTT Explorer para monitorar os tópicos.
+Este [Repositório](https://github.com/OProfJoao/ESP_Bare_Minimum) contém um passo a passo, de como implementar um cliente MQTT básico utilizando o ESP32. 
 
 ---
 
-## 🛠 Dicas Acidionais para Desenvolvimento
+## 🛠 Dicas Adicionais para Desenvolvimento
 
 - **Bibliotecas:** Explore bibliotecas adicionais que podem facilitar o desenvolvimento, como as para conexão Wi-Fi e MQTT, entre outras.
 - **Documentação:** Consulte a [documentação oficial do ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/) para informações mais detalhadas.
