@@ -139,7 +139,7 @@ Durante a configuração do ESP32, pode ser necessário resolver alguns problema
 
 ## 🌐 Uso para IoT
 
-O ESP32 é amplamente utilizado em aplicações de Internet das Coisas (IoT), permitindo a conexão com serviços de nuvem e brokers MQTT como HiveMQ e Mosquitto. A seguir, um exemplo básico de como utilizar o ESP32 para se conectar a um broker MQTT usando a biblioteca **PubSubClient**.
+O ESP32 é amplamente utilizado em aplicações de Internet das Coisas (IoT) por já ter um módulo WiFi incluso, permitindo a conexão com serviços de nuvem e brokers MQTT como HiveMQ e Mosquitto. 
 
 Este [Repositório](https://github.com/OProfJoao/ESP_Bare_Minimum) contém um passo a passo, de como implementar um cliente MQTT básico utilizando o ESP32. 
 
